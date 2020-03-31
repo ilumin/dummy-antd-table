@@ -6,6 +6,7 @@ const columns = [
   {
     title: 'Name',
     dataIndex: 'name',
+    sorter: true,
     render: name => `${name.first} ${name.last}`,
   },
   {
@@ -38,7 +39,6 @@ const DataTable = () => {
         }
       })
       .then(response => {
-        console.log(response)
         setState(prev => ({
           ...prev,
           loading: false,
@@ -49,6 +49,7 @@ const DataTable = () => {
   }
 
   const handleTableChange = (pagination, filters, sorter) => {
+    console.log({pagination, filters, sorter})
     setState(prev => ({ 
       ...prev, 
       loading: true,
