@@ -1,25 +1,9 @@
 import React, { useState, useEffect } from 'react'
 import axios from 'axios'
-import { Table } from 'antd'
+import { Table, Input, Button } from 'antd'
+import { SearchOutlined } from '@ant-design/icons'
 
 const MOCK_PAGE_RESULTS = 88
-
-const columns = [
-  {
-    title: 'Name',
-    dataIndex: 'name',
-    sorter: true,
-    render: name => `${name.first} ${name.last}`,
-  },
-  {
-    title: 'Gender',
-    dataIndex: 'gender',
-  },
-  {
-    title: 'Email',
-    dataIndex: 'email',
-  }
-]
 
 const uri = 'https://randomuser.me/api'
 
@@ -78,6 +62,69 @@ const DataTable = () => {
       ...filters,
     })
   }
+
+  const columnFilter = {
+    filterDropdown: ({ setSelectedKeys, selectedKeys, confirm, clearFilters }) => {
+      return (
+        <div style={{ padding: 8 }}>
+          <Input
+            ref={node => {
+              // ใช้อ้างอิงตอนแสดง droopdown
+              this.searchInput = node;
+            }}
+            placeholder={`Search`}
+            value={selectedKeys[0]}
+            onChange={e => setSelectedKeys(e.target.value ? [e.target.value] : [])}
+            onPressEnter={() => console.log('enter: ', {selectedKeys, confirm})}
+          />
+          <Button
+            type="primary"
+            onClick={() => {
+              console.log('click:', {selectedKeys})
+              confirm()
+            }}
+            icon={<SearchOutlined />}
+            size="small"
+          >
+            Search
+          </Button>
+          <Button onClick={() => clearFilters()} size="small" style={{ width: 90 }}>
+            Reset
+          </Button>
+        </div>
+      )
+    },
+    filterIcon: filtered => (
+      <div>ค้นหาฉันสิ</div>
+    ),
+    onFilter: (value, record) => {
+      console.log('Please filter with value:', value)
+    },
+    onFilterDropdownVisibleChange: visible => {
+      if (visible) {
+        setTimeout(() => this.searchInput.select());
+      }
+    },
+  }
+
+
+const columns = [
+  {
+    title: 'Name',
+    dataIndex: 'name',
+    sorter: true,
+    render: name => `${name.first} ${name.last}`,
+    ...columnFilter,
+  },
+  {
+    title: 'Gender',
+    dataIndex: 'gender',
+  },
+  {
+    title: 'Email',
+    dataIndex: 'email',
+  }
+]
 
   useEffect(() => {
     fetch()
