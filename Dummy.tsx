@@ -2,6 +2,8 @@ import React, { useState, useEffect } from 'react'
 import axios from 'axios'
 import { Table } from 'antd'
 
+const MOCK_PAGE_RESULTS = 88
+
 const columns = [
   {
     title: 'Name',
@@ -24,7 +26,11 @@ const uri = 'https://randomuser.me/api'
 const DataTable = () => {
   const [state, setState] = useState({
     data: [],
-    pagination: {},
+    pagination: {
+      current: 1,
+      pageSize: 10,
+      total: MOCK_PAGE_RESULTS,
+    },
     loading: false,
   })
 
@@ -43,7 +49,11 @@ const DataTable = () => {
           ...prev,
           loading: false,
           data: response.data.results,
-          pagination: response.data.info
+          pagination: {
+            ...response.data.info,
+            // mock 
+            total: MOCK_PAGE_RESULTS,
+          }
         }))
       })
   }
@@ -55,7 +65,8 @@ const DataTable = () => {
       loading: true,
       pagination: { 
         ...prev.pagination, 
-        current: pagination.current
+        current: pagination.current,
+        total: MOCK_PAGE_RESULTS,
       }
     }))
 
